@@ -4,6 +4,8 @@ const cors=require( "cors")
 const jwt=require("jsonwebtoken")
 const bcrypt=require( "bcrypt")
 const loginmodel=require("./models/admin")
+const addmodel=require("./models/add")
+
 
 const app=express()
 app.use(cors())
@@ -53,6 +55,22 @@ app.post("/signIn",(req,res)=>{
             res.json(error)
         }
     )
+})
+
+app.post("/add",(req,res)=>{
+    let input=req.body
+    let token=req.headers.token
+    jwt.verify(token,"rescueapp",(error,decoded)=>{
+        if (decoded && decoded.email) {
+            let result=new addmodel(input)
+            result.save()
+             res.json({"status":"success"})
+            
+        } else {
+
+            res.json({"status":"invalid status"})
+        }
+    })
 })
 
 
